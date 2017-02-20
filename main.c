@@ -7,10 +7,11 @@ int main()
     FILE*  Disk;
     char name[64];
 
-    char *command[] = {"format", "mkdir", "mk", "rm", "open", "close", "read", "write", "ls", "quit"};
+    char *command[] = {"format", "mkdir", "mk", "rm", "cd", "close", "read", "write", "ls", "quit"};
     //                    0         1       2    3       4       5       6        7       8     9
     char choice[32];
     int i;
+    int local_inode;
     if((Disk=fopen("filesystem.txt", "r+"))==NULL)
     { //打开一个文件，模拟文件管理系统
         Disk = fopen("filesystem.txt", "w+");
@@ -44,6 +45,21 @@ int main()
             case 3:
                 break;
             case 4:
+                scanf("%s", name);
+                if((local_inode=checkname(name))==-1)
+                {
+                    printf("%s: 没有那个文件或目录\n", name);
+                    break;
+                }
+                if((checktype(Disk,local_inode)) != TYPE_DIR)
+                {
+                    printf("%s: 没有那个文件\n", name);
+                    break;
+                }
+                if(!enter_dir(Disk, name))
+                {
+                    change_path(name);
+                }
                 break;
             case 5:
                 break;
